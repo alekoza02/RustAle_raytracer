@@ -1,7 +1,13 @@
 import numpy as np
 from utils import Image
 
-prova = np.array([0,0,0,255,255,255,255,0,0])
+W, H = 54, 54
+post = Image(W,H)
 
-post = Image(3,1)
+prova = np.zeros((W,H,3))
+
+for x in range(W):
+    for y in range(H):
+        prova[x,y,:] = [255 * x / W, 255 * y / H, 255]
+
 post.salva(prova)
