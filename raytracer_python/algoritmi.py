@@ -16,12 +16,17 @@ class Collisioni:
             risultato_iter = oggetto.collisione_oggetto(raggio)
 
             if risultato_iter >= 0:
-                risultato.colpito = True
-                risultato.distanza = risultato_iter
-                risultato.indice_sfera = indice
-                risultato.punto_colpito = raggio.origine + raggio.dir_iterazione * risultato.distanza
-                risultato.norma_colpito = risultato.punto_colpito - oggetto.origine
-                risultato.norma_colpito /= np.linalg.norm(risultato.norma_colpito)
+
+                if risultato_iter < migliore_dx:
+                    
+                    migliore_dx = risultato_iter
+
+                    risultato.colpito = True
+                    risultato.distanza = risultato_iter
+                    risultato.indice_sfera = indice
+                    risultato.punto_colpito = raggio.origine + raggio.dir_iterazione * risultato.distanza
+                    risultato.norma_colpito = risultato.punto_colpito - oggetto.origine
+                    risultato.norma_colpito /= np.linalg.norm(risultato.norma_colpito)
 
         return risultato
 

@@ -27,4 +27,9 @@ class Scena:
         self.luci = []
 
     def template(self):
-        self.oggetti = [Sfera(np.array([0,0,0]), 10)]
+        self.oggetti = [
+            Sfera(np.array([0,0,0]), 10),
+            Sfera(np.array([0,-10010,0]), 10000),
+            Sfera(np.array([3,3,15]), 2),
+            Sfera(np.array([-8,-8,-20]), 10),
+        ]
