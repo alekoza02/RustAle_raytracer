@@ -1,1 +1,1 @@
-C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer\target\release\raytracer.exe: C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer\src\main.rs
+C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer_rust\target\release\raytracer.exe: C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer_rust\src\camera.rs C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer_rust\src\main.rs C:\Users\aless\OneDrive\git_locale\PyAle_raytracer\raytracer_rust\src\matematica.rs

@@ -20,6 +20,3 @@ class Camera:
         raggio_direzione /= np.linalg.norm(raggio_direzione)
 
         self.dir_iterazione = raggio_direzione
-
-    def __str__(self) -> str:
-        return "Camera"
