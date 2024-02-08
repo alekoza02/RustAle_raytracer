@@ -1,7 +1,7 @@
 pub mod operazioni_vettori {
 
     pub fn modulo(v : &[f64; 3]) -> f64 {
-        (v[0] + v[1] + v[2]) / 3.0
+        (v[0].powi(2) + v[1].powi(2) + v[2].powi(2)).sqrt()
     }
 
     pub fn versore(v : &[f64; 3]) -> [f64; 3] {
@@ -14,7 +14,7 @@ pub mod operazioni_vettori {
     }
 
     pub fn dot_scalare(v1 : &[f64; 3], value : &f64) -> [f64; 3] {
-        [v1[0] + value, v1[1] + value, v1[2] + value]
+        [v1[0] * value, v1[1] * value, v1[2] * value]
     }
 
 }

@@ -11,9 +11,10 @@ fn main() {
 
     for x in 0..W{
         for y in 0..H {
-            camera.dir = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
-            println!("{}, {}, {}", camera.dir[0], camera.dir[1], camera.dir[2])
+            camera.dir_pix = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
+            println!("{}, {}, {}", camera.dir_pix[0], camera.dir_pix[1], camera.dir_pix[2])
         }
+        println!("\n")
     }
 
 }
