@@ -3,6 +3,7 @@ import numpy as np
 class Camera:
     def __init__(self, posizione, direzione, alto, destra, fov) -> None:
         self.origine = posizione
+        self.origine_iterante = posizione
         self.dir = direzione
         self.ups = alto
         self.rig = destra

@@ -24,7 +24,7 @@ class Collisioni:
                     risultato.colpito = True
                     risultato.distanza = risultato_iter
                     risultato.indice_sfera = indice
-                    risultato.punto_colpito = raggio.origine + raggio.dir_iterazione * risultato.distanza
+                    risultato.punto_colpito = raggio.origine_iterante + raggio.dir_iterazione * risultato.distanza
                     risultato.norma_colpito = risultato.punto_colpito - oggetto.origine
                     risultato.norma_colpito /= np.linalg.norm(risultato.norma_colpito)
 
