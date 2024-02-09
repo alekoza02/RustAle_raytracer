@@ -4,7 +4,7 @@ from camera import Camera
 from algoritmi import Collisioni
 from geometria import Scena
 
-W, H = 32, 32
+W, H = 50, 50
 SAMPLES = 8
 
 post = Image(W,H)
