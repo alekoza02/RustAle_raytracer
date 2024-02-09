@@ -25,6 +25,10 @@ fn main() {
 
     for x in 0..W{
         for y in 0..H {
+
+            let mut rgb = Vettore::new(0.0,0.0,0.0);
+            let mut rgb_iterante : Vettore;
+
             for _sample in 0..SAMPLES {
                 
                 camera.dir_pix = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
@@ -32,27 +36,33 @@ fn main() {
                 let info = test_collisione(&camera, &scena.oggetti); 
                 
                 if info.colpito == true {
-                    for i in 0..3 {
-                        pixels[((W * y + x) * 3 + i) as usize] = match i {
-                            0 => (127.0 * (info.norma_colpito.x + 1.0)) as u8,
-                            1 => (127.0 * (info.norma_colpito.y + 1.0)) as u8,
-                            2 => (127.0 * (info.norma_colpito.z + 1.0)) as u8,
-                            _ => unreachable!()
-                        }
-                    }
+                    rgb_iterante = Vettore::new(
+                        127.0 * (info.norma_colpito.x + 1.0),
+                        127.0 * (info.norma_colpito.y + 1.0),
+                        127.0 * (info.norma_colpito.z + 1.0),
+                    )
+
                 } else {
-                    for i in 0..3 {
-                        pixels[((W * y + x) * 3 + i) as usize] = match i {
-                            0 => (camera.dir_pix.x.abs() * 255.0) as u8,
-                            1 => (camera.dir_pix.y.abs() * 255.0) as u8,
-                            2 => 255,
-                            _ => unreachable!()
-                        }
-                    }       
-                } 
+                    rgb_iterante = Vettore::new(
+                        camera.dir_pix.x.abs() * 255.0,
+                        camera.dir_pix.y.abs() * 255.0,
+                            255.0,
+                    )
+                }      
+                
+                rgb = rgb + rgb_iterante;
+
             }
+
+            let rgb_mediato = rgb / SAMPLES as f64;
+            let trapianto = rgb_mediato.clip(); 
+            let trapianto_u8 = trapianto.to_u8();
+            let index = ((W * y + x) * 3) as usize;
+            pixels[index .. index + 3].copy_from_slice(&trapianto_u8);
+
         }
     }
+
 
     let _ = write_ppm("OUTPUT/output_rust.ppm", &pixels, W, H, 255);
 

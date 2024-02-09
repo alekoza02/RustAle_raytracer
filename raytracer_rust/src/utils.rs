@@ -2,7 +2,7 @@ pub mod file{
 
     use std::fs::File;
     use std::io::{self, Write};
-    use std::ops::{Add, Mul, Sub};
+    use std::ops::{Add, Div, Mul, Sub};
 
     pub fn write_ppm(filename: &str, pixels: &[u8], image_w : i32, image_h : i32, max_value : i32) -> io::Result<()> {
         let mut file = File::create(filename)?;
@@ -44,6 +44,23 @@ pub mod file{
         pub fn dot(&self, v2 : &Vettore) -> f64 {
             self.x * v2.x + self.y * v2.y + self.z * v2.z
         }
+
+        pub fn clip(&self) -> Vettore {
+            Vettore::new(
+                if self.x >= 255.0 {255.0} else {self.x},
+                if self.y >= 255.0 {255.0} else {self.y},
+                if self.z >= 255.0 {255.0} else {self.z}
+            )
+        }
+
+        pub fn to_u8(&self) -> [u8; 3] {
+            [
+                self.x as u8,
+                self.y as u8,
+                self.z as u8,
+            ]
+        }
+
     }
 
     impl Add for Vettore {
@@ -90,6 +107,18 @@ pub mod file{
                 x: self.x * value,
                 y: self.y * value,
                 z: self.z * value,
+            }
+        }
+    }
+
+    impl Div<f64> for Vettore {
+        type Output = Vettore;
+    
+        fn div(self, value: f64) -> Vettore {
+            Vettore {
+                x: self.x / value,
+                y: self.y / value,
+                z: self.z / value,
             }
         }
     }
