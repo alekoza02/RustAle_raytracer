@@ -13,8 +13,8 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W : i32 = 1080;
-const H : i32 = 1080;
+const W : i32 = 50;
+const H : i32 = 50;
 const SAMPLES : i32 = 64;
 
 
