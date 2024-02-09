@@ -1,7 +1,8 @@
 pub mod collisioni {
 
-    use crate::geometria::oggetti::{self, Oggetti};
+    use crate::geometria::oggetti::Oggetti;
     use crate::camera::camera::Camera;
+    use crate::Vettore;
 
     pub fn test_collisione(raggio : &Camera, oggetti : &[Oggetti]) -> HitInfo {
         
@@ -14,8 +15,8 @@ pub mod collisioni {
 
             // per ogni tipo di oggetto esegue il suo test di collisione
             match oggetto {
-                Oggetti::Sfera(Sfera) => {
-                    risultato_iter = Sfera.collisione_oggetto(raggio);
+                Oggetti::Sfera(sfera) => {
+                    risultato_iter = sfera.collisione_oggetto(raggio);
                     
                     if risultato_iter >= 0.0 {
                         if risultato_iter < migliore_dx { 
@@ -24,21 +25,21 @@ pub mod collisioni {
                             risultato.colpito = true;
                             risultato.distanza = risultato_iter;
                             risultato.indice_sfera = index;
-                            risultato.punto_colpito = Sfera.punto_colpito(&risultato.distanza, &raggio);
-                            risultato.norma_colpito = Sfera.normale(&risultato.punto_colpito, &raggio);
+                            risultato.punto_colpito = sfera.punto_colpito(risultato.distanza, raggio);
+                            risultato.norma_colpito = sfera.normale(risultato.punto_colpito);
                         }
                     }
                 }
             }
             
         }
-    risultato
+        risultato
     }
 
     pub struct HitInfo {
         pub colpito : bool,
-        pub punto_colpito : [f64; 3],
-        pub norma_colpito : [f64; 3],
+        pub punto_colpito : Vettore,
+        pub norma_colpito : Vettore,
         pub distanza : f64,
         pub indice_sfera : usize
     }
@@ -47,8 +48,8 @@ pub mod collisioni {
         fn new() -> HitInfo {
             HitInfo {
                 colpito : false,
-                punto_colpito : [0.0, 0.0, 0.0],
-                norma_colpito : [0.0, 0.0, 0.0],
+                punto_colpito : Vettore::new(0.0, 0.0, 0.0),
+                norma_colpito : Vettore::new(0.0, 0.0, 0.0),
                 distanza : 0.0,
                 indice_sfera : 0
             }

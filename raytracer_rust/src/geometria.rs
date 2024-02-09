@@ -1,8 +1,8 @@
 pub mod oggetti {
 
     use crate::camera::camera::Camera;
-    use crate::matematica::operazioni_vettori::{dot, dot_scalare, somma_wise, sub_wise, versore};
-
+    use crate::Vettore;
+    
     // possibili oggetti nella scena
     pub enum Oggetti {
         Sfera(Sfera),
@@ -10,7 +10,7 @@ pub mod oggetti {
 
     // specifiche sulla sfera
     pub struct Sfera {
-        origine : [f64; 3],
+        origine : Vettore,
         raggio : f64
     }
 
@@ -22,31 +22,31 @@ pub mod oggetti {
 
     // implementazione funzioni legate alla sfera
     impl Sfera {
-        fn new(origine : [f64; 3], raggio : f64) -> Sfera {
+        fn new(origine : Vettore, raggio : f64) -> Sfera {
             Sfera {
                 origine,
                 raggio
             }
         }
 
-        pub fn normale(&self, punto_colpito : &[f64; 3], raggio : &Camera) -> [f64; 3] {
-            let normale = sub_wise(&punto_colpito, &self.origine);
-            let risultato = versore(&normale);
+        pub fn normale(&self, punto_colpito : Vettore) -> Vettore {
+            let normale = punto_colpito - self.origine;
+            let risultato = normale.versore();
             risultato
         }
 
-        pub fn punto_colpito(&self, distanza : &f64, raggio : &Camera) -> [f64; 3] {
-            let risultato_1 = dot_scalare(&raggio.dir_pix, &distanza);
-            let risultato_2 = somma_wise(&risultato_1, &raggio.pos);
+        pub fn punto_colpito(&self, distanza : f64, raggio : &Camera) -> Vettore {
+            let risultato_1 = raggio.dir_pix * distanza;
+            let risultato_2 = risultato_1 + raggio.pos;
             risultato_2
         }
 
         pub fn collisione_oggetto(&self, raggio : &Camera) -> f64 {
             
-            let oc : [f64; 3] = sub_wise(&raggio.pos, &self.origine);
-            let a : f64 = dot(&raggio.dir_pix, &raggio.dir_pix);
-            let b : f64 = dot(&oc, &raggio.dir_pix) * 2.0;
-            let c : f64 = dot(&oc, &oc) - self.raggio.powi(2);
+            let oc = raggio.pos - self.origine;
+            let a : f64 = 1.0;
+            let b : f64 = oc.dot(&raggio.dir_pix) * 2.0;
+            let c : f64 = oc.dot(&oc) - self.raggio.powi(2);
             
             let discriminante = b.powi(2) - 4.0 * a * c;
 
@@ -62,10 +62,10 @@ pub mod oggetti {
     impl Scena {
         pub fn default() -> Scena {
             let argomento = [
-                Oggetti::Sfera(Sfera::new([0.,0.,0.], 10.)),
-                Oggetti::Sfera(Sfera::new([0.,-10010.,0.], 10000.)),
-                Oggetti::Sfera(Sfera::new([3.,3.,15.], 2.)),
-                Oggetti::Sfera(Sfera::new([-8.,-8.,-20.], 10.))
+                Oggetti::Sfera(Sfera::new(Vettore::new(0.,0.,0.), 10.)),
+                Oggetti::Sfera(Sfera::new(Vettore::new(0.,-10010.,0.), 10000.)),
+                Oggetti::Sfera(Sfera::new(Vettore::new(3.,3.,15.), 2.)),
+                Oggetti::Sfera(Sfera::new(Vettore::new(-8.,-8.,-20.), 10.))
             ];
 
             Scena{oggetti : argomento}
