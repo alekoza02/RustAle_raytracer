@@ -45,7 +45,7 @@ pub mod collisioni {
     }
 
     impl HitInfo {
-        fn new() -> HitInfo {
+        pub fn new() -> HitInfo {
             HitInfo {
                 colpito : false,
                 punto_colpito : Vettore::new(0.0, 0.0, 0.0),

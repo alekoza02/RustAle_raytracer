@@ -1,5 +1,3 @@
-// TODO -> aggiunta media colore con samples
-
 mod camera;
 mod utils;
 mod geometria;
@@ -7,18 +5,23 @@ mod algoritmi;
 
 use std::f64::consts::PI;
 
+use std::io::{self};
+use std::time::Instant;
+
 use algoritmi::collisioni::test_collisione;
 use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W : i32 = 540;
-const H : i32 = 540;
-const SAMPLES : i32 = 32;
+const W : i32 = 54;
+const H : i32 = 54;
+const SAMPLES : i32 = 128;
 
 
-fn main() {
-    let mut pixels :  [u8; (W*H*3) as usize] = [0; (W*H*3) as usize];
+fn main() -> io::Result<()> {
+
+    let start_time = Instant::now();
+    let mut pixels: Vec<u8> = vec![0; (W * H * 3) as usize];
     let mut camera = Camera::new(Vettore::new(0.,0.,30.), Vettore::new(0.,0.,-1.), Vettore::new(0.,1.,0.), Vettore::new(1.,0.,0.), PI / 3.0);
 
     let scena = Scena::default();
@@ -65,5 +68,12 @@ fn main() {
 
 
     let _ = write_ppm("OUTPUT/output_rust.ppm", &pixels, W, H, 255);
+
+    let end_time = Instant::now();
+    let duration = end_time.duration_since(start_time);
+    let seconds = duration.as_secs_f64();
+
+    println!("\n\nFinito in: {:.6} seconds\n\n", seconds);
+    Ok(())
 
 }
