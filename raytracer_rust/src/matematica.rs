@@ -13,8 +13,16 @@ pub mod operazioni_vettori {
         [v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]]
     }
 
+    pub fn sub_wise(v1 : &[f64; 3], v2 : &[f64; 3]) -> [f64; 3] {
+        [v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]]
+    }
+
     pub fn dot_scalare(v1 : &[f64; 3], value : &f64) -> [f64; 3] {
         [v1[0] * value, v1[1] * value, v1[2] * value]
+    }
+
+    pub fn dot(v1 : &[f64; 3], v2 : &[f64; 3]) -> f64 {
+        v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
     }
 
 }
