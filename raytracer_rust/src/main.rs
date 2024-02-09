@@ -15,7 +15,7 @@ use utils::file::{write_ppm, Vettore};
 
 const W : i32 = 1080;
 const H : i32 = 1080;
-const SAMPLES : i32 = 128;
+const SAMPLES : i32 = 64;
 
 
 fn main() -> io::Result<()> {
