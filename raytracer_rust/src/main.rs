@@ -16,7 +16,7 @@ use utils::file::{write_ppm, Vettore};
 
 const W : i32 = 300;
 const H : i32 = 300;
-const SAMPLES : i32 = 128;
+const SAMPLES : i32 = 128 * 10;
 const BOUNCES : i32 = 4;
 
 fn main() -> io::Result<()> {
@@ -53,16 +53,24 @@ fn main() -> io::Result<()> {
                     if info.colpito == true {
                         camera.pos_iter = info.punto_colpito;
 
-                        camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
-                        camera.dir_pix = camera.dir_pix.versore();
+                        let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
 
-                        if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
-                            camera.dir_pix = - camera.dir_pix
+                        
+                        if materiale_iterazione.metallo == false {
+                            camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
+                            camera.dir_pix = camera.dir_pix.versore();
+                            
+                            if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
+                                camera.dir_pix = - camera.dir_pix
+                            }
+                        } else {
+                            camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
+                            camera.dir_pix = camera.dir_pix.versore();
                         }
-
-                        luce_emessa = scena.oggetti[info.indice_sfera].materiale.colore_emi * scena.oggetti[info.indice_sfera].materiale.forza_emi;
+                        
+                        luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
                         ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
-                        ray_color = ray_color * scena.oggetti[info.indice_sfera].materiale.colore;
+                        ray_color = ray_color * materiale_iterazione.colore;
                         
                     } else {
                         break
