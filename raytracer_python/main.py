@@ -67,6 +67,9 @@ for x in range(W):
                         r_out_perp = ratio_rifrazione * (camera.dir_iterazione + coseno * info_iter.norma_colpito)
                         r_out_para = -np.sqrt(np.abs(1 - np.linalg.norm(r_out_perp) ** 2)) * camera.dir_iterazione
 
+                        camera.dir_iterazione = r_out_para + r_out_perp
+                        camera.dir_iterazione /= np.linalg.norm(camera.dir_iterazione)
+
                     luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi
                     ray_incoming_light = ray_incoming_light + luce_emessa * ray_color
                     ray_color = ray_color * materiale_iterazione.colore

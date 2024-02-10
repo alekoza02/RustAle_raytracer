@@ -16,8 +16,8 @@ use utils::file::{write_ppm, Vettore};
 
 const W : i32 = 300;
 const H : i32 = 300;
-const SAMPLES : i32 = 128 * 10;
-const BOUNCES : i32 = 4;
+const SAMPLES : i32 = 4096;
+const BOUNCES : i32 = 20;
 
 fn main() -> io::Result<()> {
 
@@ -56,16 +56,32 @@ fn main() -> io::Result<()> {
                         let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
 
                         
-                        if materiale_iterazione.metallo == false {
+                        if materiale_iterazione.diffuse == true {
                             camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
                             camera.dir_pix = camera.dir_pix.versore();
                             
                             if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
                                 camera.dir_pix = - camera.dir_pix
                             }
-                        } else {
+                        
+                        } else if materiale_iterazione.metallo == true {
                             camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
                             camera.dir_pix = camera.dir_pix.versore();
+                        
+                        } else if materiale_iterazione.vetro == true {
+                            
+                            let info = info.check_front_face(&camera);
+
+                            let ratio_rifrazione = if info.front_face == true {1.0 / materiale_iterazione.ir} else {materiale_iterazione.ir};
+                            
+                            let coseno = camera.dir_pix.dot(&info.norma_colpito);
+
+                            let r_out_perp = (camera.dir_pix + info.norma_colpito * coseno) * ratio_rifrazione;
+                            let r_out_para = - camera.dir_pix * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
+
+                            camera.dir_pix = r_out_perp + r_out_para;
+                            camera.dir_pix = camera.dir_pix.versore();
+
                         }
                         
                         luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;

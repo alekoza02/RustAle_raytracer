@@ -37,7 +37,8 @@ pub mod collisioni {
         pub punto_colpito : Vettore,
         pub norma_colpito : Vettore,
         pub distanza : f64,
-        pub indice_sfera : usize
+        pub indice_sfera : usize,
+        pub front_face : bool
     }
 
     impl HitInfo {
@@ -47,9 +48,23 @@ pub mod collisioni {
                 punto_colpito : Vettore::new(0.0, 0.0, 0.0),
                 norma_colpito : Vettore::new(0.0, 0.0, 0.0),
                 distanza : 0.0,
-                indice_sfera : 0
+                indice_sfera : 0,
+                front_face : false
             }
         }
+
+        pub fn check_front_face(mut self, raggio : &Camera) -> HitInfo {
+            if raggio.dir_pix.dot(&self.norma_colpito) > 0.0 {
+                self.front_face = false;
+                self.norma_colpito = - self.norma_colpito;
+            } else {
+                self.front_face = true;
+            }
+
+            self
+
+        }
+
     }
 
 }
