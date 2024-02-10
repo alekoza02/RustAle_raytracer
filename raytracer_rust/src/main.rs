@@ -16,7 +16,7 @@ use utils::file::{write_ppm, Vettore};
 
 const W : i32 = 300;
 const H : i32 = 300;
-const SAMPLES : i32 = 4096;
+const SAMPLES : i32 = 40;
 const BOUNCES : i32 = 20;
 
 fn main() -> io::Result<()> {
@@ -75,13 +75,20 @@ fn main() -> io::Result<()> {
                             let ratio_rifrazione = if info.front_face == true {1.0 / materiale_iterazione.ir} else {materiale_iterazione.ir};
                             
                             let coseno = camera.dir_pix.dot(&info.norma_colpito);
+                            let seno = (1.0 - coseno.powi(2)).sqrt();
 
-                            let r_out_perp = (camera.dir_pix + info.norma_colpito * coseno) * ratio_rifrazione;
-                            let r_out_para = - camera.dir_pix * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
+                            let cannot_refract = ratio_rifrazione * seno > 1.0; 
 
-                            camera.dir_pix = r_out_perp + r_out_para;
-                            camera.dir_pix = camera.dir_pix.versore();
+                            if cannot_refract == true{
+                                camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
+                                camera.dir_pix = camera.dir_pix.versore();
+                            } else {
+                                let r_out_perp = (camera.dir_pix + info.norma_colpito * coseno) * ratio_rifrazione;
+                                let r_out_para = - camera.dir_pix * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
 
+                                camera.dir_pix = r_out_perp + r_out_para;
+                                camera.dir_pix = camera.dir_pix.versore();
+                            }
                         }
                         
                         luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
