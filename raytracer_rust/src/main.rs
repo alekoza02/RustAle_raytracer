@@ -14,9 +14,9 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W : i32 = 1080;
-const H : i32 = 1080;
-const SAMPLES : i32 =  256;
+const W : i32 = 300;
+const H : i32 = 300;
+const SAMPLES : i32 = 128;
 const BOUNCES : i32 = 4;
 
 fn main() -> io::Result<()> {
