@@ -38,17 +38,24 @@ for x in range(W):
                 
                 if info_iter.colpito:
      
+                    materiale_iterazione = scena.oggetti[info_iter.indice_sfera].materiale
+
                     camera.origine_iterante = info_iter.punto_colpito
                     
-                    camera.dir_iterazione = np.array([np.random.normal(),np.random.normal(),np.random.normal()])
-                    camera.dir_iterazione /= np.linalg.norm(camera.dir_iterazione)
+                    if not materiale_iterazione.metallo: 
+                        camera.dir_iterazione = np.array([np.random.normal(),np.random.normal(),np.random.normal()])
+                        camera.dir_iterazione /= np.linalg.norm(camera.dir_iterazione)
 
-                    if np.dot(camera.dir_iterazione, info_iter.norma_colpito) <= 0:
-                        camera.dir_iterazione = - camera.dir_iterazione
-                                    
-                    luce_emessa = scena.oggetti[info_iter.indice_sfera].materiale.colore_emi * scena.oggetti[info_iter.indice_sfera].materiale.forza_emi
+                        if np.dot(camera.dir_iterazione, info_iter.norma_colpito) <= 0:
+                            camera.dir_iterazione = - camera.dir_iterazione
+                    
+                    elif materiale_iterazione.metallo:
+                        camera.dir_iterazione = camera.dir_iterazione - np.dot(info_iter.norma_colpito, np.dot(camera.dir_iterazione, info_iter.norma_colpito) * 2.0)
+                        camera.dir_iterazione /= np.linalg.norm(camera.dir_iterazione)
+
+                    luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi
                     ray_incoming_light = ray_incoming_light + luce_emessa * ray_color
-                    ray_color = ray_color * scena.oggetti[info_iter.indice_sfera].materiale.colore
+                    ray_color = ray_color * materiale_iterazione.colore
                 
                 else:
                     break
