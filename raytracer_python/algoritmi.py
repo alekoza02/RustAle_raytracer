@@ -38,3 +38,11 @@ class HitInfo:
         self.norma_colpito = np.array([.0,.0,.0])
         self.distanza = 0.0
         self.indice_sfera = 0
+        self.front_face = False
+
+    def check_front_face(self, raggio):
+        if np.dot(raggio.dir_iterazione, self.norma_colpito) > 0:
+            self.front_face = False
+            self.norma_colpito = - self.norma_colpito
+        else:
+            self.front_face = True
