@@ -2,7 +2,7 @@ pub mod file{
 
     use std::fs::File;
     use std::io::{self, Write};
-    use std::ops::{Add, Div, Mul, Sub};
+    use std::ops::{Add, Div, Mul, Sub, Neg};
 
     pub fn write_ppm(filename: &str, pixels: &[u8], image_w : i32, image_h : i32, max_value : i32) -> io::Result<()> {
         let mut file = File::create(filename)?;
@@ -53,6 +53,14 @@ pub mod file{
             )
         }
 
+        pub fn abs(&self) -> Vettore {
+            Vettore::new(
+                self.x.abs(),
+                self.y.abs(),
+                self.z.abs()
+            )
+        }
+
         pub fn to_u8(&self) -> [u8; 3] {
             [
                 self.x as u8,
@@ -83,6 +91,18 @@ pub mod file{
                 x: self.x - other.x,
                 y: self.y - other.y,
                 z: self.z - other.z,
+            }
+        }
+    }
+
+    impl Neg for Vettore {
+        type Output = Vettore;
+
+        fn neg(self) -> Vettore {
+            Vettore {
+                x: - self.x,
+                y: - self.y,
+                z: - self.z,
             }
         }
     }

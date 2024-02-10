@@ -5,6 +5,7 @@ pub mod camera {
 
     pub struct Camera {
         pub pos : Vettore,
+        pub pos_iter : Vettore,
         pub dir : Vettore,
         pub dir_pix : Vettore,
         pub ups : Vettore,
@@ -16,6 +17,7 @@ pub mod camera {
         pub fn new(pos : Vettore, dir : Vettore, ups : Vettore, rig : Vettore, fov : f64) -> Camera {
             Camera {
                 pos,
+                pos_iter : pos,
                 dir,
                 dir_pix : Vettore::new(0.0,0.0,0.0),
                 ups,

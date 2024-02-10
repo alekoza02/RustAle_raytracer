@@ -5,6 +5,7 @@ mod algoritmi;
 
 use std::f64::consts::PI;
 
+use rand::prelude::*;
 use std::io::{self};
 use std::time::Instant;
 
@@ -13,12 +14,14 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W : i32 = 10;
-const H : i32 = 10;
-const SAMPLES : i32 = 64;
-
+const W : i32 = 500;
+const H : i32 = 500;
+const SAMPLES : i32 = 512;
+const BOUNCES : i32 = 6;
 
 fn main() -> io::Result<()> {
+
+    let mut rng = rand::thread_rng();
 
     let start_time = Instant::now();
     let mut pixels: Vec<u8> = vec![0; (W * H * 3) as usize];
@@ -30,31 +33,45 @@ fn main() -> io::Result<()> {
         for y in 0..H {
 
             let mut rgb = Vettore::new(0.0,0.0,0.0);
-            let mut rgb_iterante : Vettore;
 
             for _sample in 0..SAMPLES {
                 
                 camera.dir_pix = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
                 
-                let info = test_collisione(&camera, &scena.oggetti); 
-                
-                if info.colpito == true {
-                    rgb_iterante = Vettore::new(
-                        127.0 * (info.norma_colpito.x + 1.0),
-                        127.0 * (info.norma_colpito.y + 1.0),
-                        127.0 * (info.norma_colpito.z + 1.0),
-                    )
+                let mut ray_incoming_light = Vettore::new(0.,0.,0.);
+                let mut ray_color = Vettore::new(1.,1.,1.);
+                let mut luce_emessa : Vettore;
 
-                } else {
-                    rgb_iterante = Vettore::new(
-                        camera.dir_pix.x.abs() * 255.0,
-                        camera.dir_pix.y.abs() * 255.0,
-                            255.0,
-                    )
-                }      
+                camera.pos_iter = camera.pos;
                 
-                rgb = rgb + rgb_iterante;
+                for _bounce in 0..BOUNCES{
+                    
 
+                    let info = test_collisione(&camera, &scena.oggetti); 
+                    
+                    if info.colpito == true {
+                        camera.pos_iter = info.punto_colpito;
+
+                        camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
+                        camera.dir_pix = camera.dir_pix.versore();
+
+                        if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
+                            camera.dir_pix = - camera.dir_pix
+                        }
+
+                        luce_emessa = scena.oggetti[info.indice_sfera].materiale.colore_emi * scena.oggetti[info.indice_sfera].materiale.forza_emi;
+                        ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
+                        ray_color = ray_color * scena.oggetti[info.indice_sfera].materiale.colore;
+                        
+                    } else {
+                        break
+                    }      
+                    
+                }
+            
+                rgb = rgb + ray_incoming_light * 255.0;
+                // println!("{},{},{}", rgb.x, rgb.y, rgb.z);
+            
             }
 
             let rgb_mediato = rgb / SAMPLES as f64;
