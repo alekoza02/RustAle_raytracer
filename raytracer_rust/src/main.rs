@@ -14,10 +14,10 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W : i32 = 500;
-const H : i32 = 500;
-const SAMPLES : i32 = 512;
-const BOUNCES : i32 = 6;
+const W : i32 = 1080;
+const H : i32 = 1080;
+const SAMPLES : i32 =  256;
+const BOUNCES : i32 = 4;
 
 fn main() -> io::Result<()> {
 
@@ -25,9 +25,10 @@ fn main() -> io::Result<()> {
 
     let start_time = Instant::now();
     let mut pixels: Vec<u8> = vec![0; (W * H * 3) as usize];
-    let mut camera = Camera::new(Vettore::new(0.,0.,30.), Vettore::new(0.,0.,-1.), Vettore::new(0.,1.,0.), Vettore::new(1.,0.,0.), PI / 3.0);
+    // let mut pixels: [u8; (W*H*3) as usize] = [0; (W * H * 3) as usize];
+    let mut camera = Camera::new(Vettore::new(0.,0.,30.), Vettore::new(0.,0.,-1.), Vettore::new(0.,1.,0.), Vettore::new(1.,0.,0.), PI / 8.0);
 
-    let scena = Scena::default();
+    let scena = Scena::cornell_box();
 
     for x in 0..W{
         for y in 0..H {

@@ -7,7 +7,7 @@ class Image:
         self.header = f"P6\n{self.w} {self.h}\n{self.max_color_value}\n"
 
     def salva(self, data):
-        with open("raytracer_python/OUTPUT_python/python_1.ppm", "wb") as ppm_file:
+        with open("OUTPUT_python/python_1.ppm", "wb") as ppm_file:
             ppm_file.write(bytearray(self.header, "ascii"))
             data = data.transpose(1,0,2)
             data = data.ravel()

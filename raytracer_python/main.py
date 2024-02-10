@@ -1,21 +1,25 @@
 import numpy as np
+from time import time
 from utils import Image
 from camera import Camera
 from algoritmi import Collisioni
 from geometria import Scena
 
-W, H = 50,50
-SAMPLES = 100
+
+W, H = 100, 100
+SAMPLES = 16
 BOUNCES = 4
 
 post = Image(W,H)
 #camera = Camera(np.array([-30, -30, 40]), np.array([0.49960239, 0.49999984, -0.70738787]), np.array([-0.49999984, -0.50039761, -0.70682558]), np.array([0.70738787, -0.70682558, 0.]), np.pi/6)
-camera = Camera(np.array([0, 0, 30]), np.array([0, 0, -1]), np.array([0, 1, 0]), np.array([1, 0, 0]), np.pi/3)
+camera = Camera(np.array([0, 0, 30]), np.array([0, 0, -1]), np.array([0, 1, 0]), np.array([1, 0, 0]), np.pi/8)
 scena = Scena()
-scena.template()
+scena.cornell_box()
 tester = Collisioni()
 
 prova = np.zeros((W,H,3))
+
+inzio_time = time()
 
 for x in range(W):
     for y in range(H):
@@ -25,9 +29,10 @@ for x in range(W):
             ray_incoming_light = np.array([0.,0.,0.])
             ray_color = np.array([1.,1.,1.])
 
+            camera.origine_iterante = camera.origine
+            
             for bounce in range(BOUNCES):
                 
-                camera.origine_iterante = camera.origine
 
                 info_iter = tester.test_collisione(camera, scena.oggetti)
                 
@@ -54,3 +59,5 @@ for x in range(W):
 prova /= SAMPLES
 prova = np.clip(prova, 0, 255)
 post.salva(prova)
+
+print(f"Finito in: {time() - inzio_time}")

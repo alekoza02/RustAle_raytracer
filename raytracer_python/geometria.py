@@ -35,6 +35,19 @@ class Scena:
             Sfera(np.array([-8,-8,-20]),    10,         Materiale([0,0,0], [0,1,0], 10)),
         ]
 
+    def cornell_box(self):
+        self.oggetti = [
+            Sfera(np.array([0.,-1005.,0.]),      1000.,  Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([0.,1005.,0.]),       1000.,  Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([1005.,0.,0.]),       1000.,  Materiale(np.array([0.,0.7,1.]),np.array([0.,0.,1.]), 0.)),
+            Sfera(np.array([-1005.,0.,0.]),      1000.,  Materiale(np.array([1.,0.5,0.]),np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([0.,0.,-1005.]),      1000.,  Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([0.,12.,0.]),         8.,     Materiale(np.array([1.,1.,1.]), np.array([1.,1.,1.]), 3.)),
+            Sfera(np.array([1.,-2.,-2.]),        3.,     Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([2.5,-3.25,4.]),      1.75,   Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.)),
+            Sfera(np.array([-3., -3.75,2.]),     1.25,   Materiale(np.array([1.,1.,1.]), np.array([0.,0.,0.]), 0.))
+        ]
+
 class Materiale: 
 
     def __init__(self, colore, colore_emi, forza_emi) -> None:
