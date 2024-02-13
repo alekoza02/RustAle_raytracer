@@ -6,8 +6,8 @@ from algoritmi import Collisioni
 from geometria import Scena
 
 
-W, H = 100, 100
-SAMPLES = 64
+W, H = 1800 // 8, 1800 // 8
+SAMPLES = 1
 BOUNCES = 20
 
 post = Image(W,H)
@@ -21,8 +21,9 @@ prova = np.zeros((W,H,3))
 
 inzio_time = time()
 
-for x in range(W):
-    for y in range(H):
+for x in [25 + 15]:
+    print(f"done {x}")
+    for y in [157 + 15]:
         for sample in range(SAMPLES):
             
             camera.genera_direzione(x,y,W,H)
@@ -56,20 +57,17 @@ for x in range(W):
                     elif materiale_iterazione.vetro:
                         
                         info_iter.check_front_face(camera)
-
-                        riflesso = camera.dir_iterazione - np.dot(info_iter.norma_colpito, np.dot(camera.dir_iterazione, info_iter.norma_colpito) * 2.0)
-                        riflesso /= np.linalg.norm(riflesso)
-
+                        
                         ratio_rifrazione =  1 / materiale_iterazione.ir if info_iter.front_face == True else materiale_iterazione.ir
+                        
+                        coseno = np.dot(- camera.dir_iterazione, info_iter.norma_rifrazione)
 
-                        coseno = np.dot(camera.dir_iterazione, info_iter.norma_colpito)
-
-                        r_out_perp = ratio_rifrazione * (camera.dir_iterazione + coseno * info_iter.norma_colpito)
+                        r_out_perp = ratio_rifrazione * (camera.dir_iterazione + coseno * info_iter.norma_rifrazione)
                         r_out_para = -np.sqrt(np.abs(1 - np.linalg.norm(r_out_perp) ** 2)) * camera.dir_iterazione
 
                         camera.dir_iterazione = r_out_para + r_out_perp
                         camera.dir_iterazione /= np.linalg.norm(camera.dir_iterazione)
-
+                        
                     luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi
                     ray_incoming_light = ray_incoming_light + luce_emessa * ray_color
                     ray_color = ray_color * materiale_iterazione.colore

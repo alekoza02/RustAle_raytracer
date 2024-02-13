@@ -57,17 +57,17 @@ pub mod oggetti {
 
     // implementazione scena default
     impl Scena {
-        pub fn default() -> Scena {
-            let argomento = vec![
-                Sfera::new(Vettore::new(0.,0.,0.), 10.,         Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0)),
-                Sfera::new(Vettore::new(0.,-10010.,0.), 10000., Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0)),
-                Sfera::new(Vettore::new(3.,3.,15.), 2.,         Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(0.,0.,1.), 15., true, false, false, 1.0)),
-                Sfera::new(Vettore::new(-8.,-8.,-20.), 10.,     Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(0.,1.,0.), 4., true, false, false, 1.0))
-            ];
+        // pub fn default() -> Scena {
+        //     let argomento = vec![
+        //         Sfera::new(Vettore::new(0.,0.,0.), 10.,         Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0)),
+        //         Sfera::new(Vettore::new(0.,-10010.,0.), 10000., Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0)),
+        //         Sfera::new(Vettore::new(3.,3.,15.), 2.,         Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(0.,0.,1.), 15., true, false, false, 1.0)),
+        //         Sfera::new(Vettore::new(-8.,-8.,-20.), 10.,     Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(0.,1.,0.), 4., true, false, false, 1.0))
+        //     ];
 
-            Scena{oggetti : argomento}
-        }
-    
+        //     Scena{oggetti : argomento}
+        // }
+        
         pub fn cornell_box() -> Scena {
             let argomento = vec![
                 Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0)),

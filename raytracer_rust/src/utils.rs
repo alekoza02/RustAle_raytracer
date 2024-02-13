@@ -53,13 +53,13 @@ pub mod file{
             )
         }
 
-        pub fn abs(&self) -> Vettore {
-            Vettore::new(
-                self.x.abs(),
-                self.y.abs(),
-                self.z.abs()
-            )
-        }
+        // pub fn abs(&self) -> Vettore {
+        //     Vettore::new(
+        //         self.x.abs(),
+        //         self.y.abs(),
+        //         self.z.abs()
+        //     )
+        // }
 
         pub fn to_u8(&self) -> [u8; 3] {
             [
@@ -79,6 +79,18 @@ pub mod file{
                 x: self.x + other.x,
                 y: self.y + other.y,
                 z: self.z + other.z,
+            }
+        }
+    }
+
+    impl Add<f64> for Vettore {
+        type Output = Vettore;
+
+        fn add(self, value : f64) -> Vettore {
+            Vettore {
+                x: self.x + value,
+                y: self.y + value,
+                z: self.z + value,
             }
         }
     }
