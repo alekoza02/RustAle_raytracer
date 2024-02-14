@@ -16,7 +16,7 @@ use utils::file::{write_ppm, Vettore};
 
 const W : i32 = 1800;
 const H : i32 = 1800;
-const SAMPLES : i32 = 16;
+const SAMPLES : i32 = 3000;
 const BOUNCES : i32 = 20;
 
 fn main() -> io::Result<()> {
@@ -30,11 +30,12 @@ fn main() -> io::Result<()> {
 
     let scena = Scena::cornell_box();
 
-    for x in 200..650{
+    for x in 0..W{
         
-        // if x % 100 == 0 {let _ = write_ppm("OUTPUT/output_rust_zoom.ppm", &pixels, W, H, 255);}
+        // if x % 10 == 0 {let _ = write_ppm("OUTPUT/output_rust_zoom_only_glass.ppm", &pixels, W, H, 255);}
+        if x % 18 == 0 {println!("{}%", 100 * x / 1800)}
         
-        for y in 1250..1750 {
+        for y in 0..H{
 
             let mut rgb = Vettore::new(0.0,0.0,0.0);
 
@@ -75,29 +76,27 @@ fn main() -> io::Result<()> {
                             
                             let info = info.check_front_face(&camera);
 
-                            if info.front_face == false {println!("Back face!")}
-
                             let ratio_rifrazione = if info.front_face == true {1.0 / materiale_iterazione.ir} else {materiale_iterazione.ir};
                             
-                            let coseno = camera.dir_pix.dot(&info.norma_colpito);
-                            let seno = ratio_rifrazione * ratio_rifrazione * (1.0 - coseno.powi(2));
+                            let coseno = (-camera.dir_pix).dot(&info.norma_rifrazione);
+                            let seno = (1.0 - coseno.powi(2)).sqrt();
 
-                            let cannot_refract = ratio_rifrazione * seno > 1.0;
+                            let mut schlick_approx = (1.0-materiale_iterazione.ir) / (1.0+materiale_iterazione.ir);
+                            schlick_approx = schlick_approx * schlick_approx;
+                            let cannot_refract1 = schlick_approx + (1.0-schlick_approx)*((1.0 - coseno).powi(5)) > rng.gen_range(0.0..1.0);
+
+                            let cannot_refract2 = ratio_rifrazione * seno > 1.0;
                             
-                            if cannot_refract == true{
-                                camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
+                            if cannot_refract2 | cannot_refract1 == true{
+                                camera.dir_pix = camera.dir_pix - info.norma_rifrazione * camera.dir_pix.dot(&info.norma_rifrazione) * 2.0;
                                 camera.dir_pix = camera.dir_pix.versore();
                             } else {
                                 
-                                let r_out_perp = (camera.dir_pix + info.norma_colpito * coseno) * ratio_rifrazione;
-                                let r_out_para = - camera.dir_pix * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
+                                let r_out_perp = (camera.dir_pix + info.norma_rifrazione * coseno) * ratio_rifrazione;
+                                let r_out_para = - info.norma_rifrazione * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
                                 camera.dir_pix = r_out_perp + r_out_para;
 
-                                // let cost = (1.0 - seno).sqrt();
-                                // camera.dir_pix = info.norma_colpito * camera.dir_pix + info.norma_colpito * (ratio_rifrazione * coseno * cost);
-
                                 camera.dir_pix = camera.dir_pix.versore();
-                                // rgb = (camera.dir_pix + 1.0) * 127.0;
                             }
                         }
                         
@@ -126,7 +125,7 @@ fn main() -> io::Result<()> {
     }
 
 
-    let _ = write_ppm("OUTPUT/output_rust_zoom_only_reflect.ppm", &pixels, W, H, 255);
+    let _ = write_ppm("OUTPUT/output_exe.ppm", &pixels, W, H, 255);
 
     let end_time = Instant::now();
     let duration = end_time.duration_since(start_time);

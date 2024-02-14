@@ -51,7 +51,7 @@ pub mod collisioni {
                 norma_rifrazione : Vettore::new(0.0, 0.0, 0.0),
                 distanza : 0.0,
                 indice_sfera : 0,
-                front_face : false
+                front_face : true
             }
         }
 

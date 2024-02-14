@@ -48,9 +48,13 @@ pub mod oggetti {
             let discriminante = b.powi(2) - 4.0 * a * c;
 
             if discriminante >= 0.0 {
-                return (- b - discriminante.sqrt()) / (2.0*a)
+                let delta_min = (- b - discriminante.sqrt()) / (2.0*a);
+                let delta_max = (- b + discriminante.sqrt()) / (2.0*a);
+
+                if delta_min > 0.0 {delta_min} else if delta_max > 0.0 {delta_max} else {-1.0}
+
             } else {
-                return -1.0
+                -1.0
             }
         }
     }
