@@ -14,9 +14,9 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
-const W: usize = 1800;
-const H: usize = 1800;
-const SAMPLES: i32 = 8000;
+const W: usize = 360;
+const H: usize = 360;
+const SAMPLES: i32 = 3200;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -24,9 +24,17 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
     let mut rng = rand::thread_rng();
     let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
     let scena = Scena::cornell_box();
+    let mut previous_progress = 0;
 
     for x in start_x..end_x {
-        if x % 18 == 0 {println!("Processo {}: {}%", indice, (100*(x-start_x)/(end_x-start_x)));}
+        
+        let progress : i32 = (100*(x-start_x)/(end_x-start_x)) as i32;
+
+        if progress > previous_progress && progress % 5 == 0 && indice == 0{
+            previous_progress = progress;
+            save_output_to_file(&output.lock().unwrap());
+        }
+
         for y in start_y..end_y {
             
             let mut rgb = Vettore::new(0.0, 0.0, 0.0);
@@ -138,5 +146,5 @@ fn main() {
 }
 
 fn save_output_to_file(output: &Vec<u8>) {
-    let _ = write_ppm("OUTPUT/rust_parallelo_tracer_high.ppm", &output, W as i32, H as i32, 255);
+    let _ = write_ppm("OUTPUT/debug.ppm", &output, W as i32, H as i32, 255);
 }
