@@ -17,6 +17,7 @@ Supporta:
 - Camera:
   - Movable
   - Antialiasing
+  - FOV aggiustabile
 
 - Post processing:
   - None
