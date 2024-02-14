@@ -1,13 +1,72 @@
-Prova di utilizzo di GitHub
+Progetto : Raytracer in Rust
 
-Progetto : raytracer
+Supporta:
 
-Voglio provare a creare un raytracer in Python e Rust
+- Geometrie:
+  - Sfere
+ 
+- Hardware:
+  - CPU : multithread
+ 
+- Materiali:
+  - Diffuse
+  - Metal
+  - Glass
+  - Light source
 
-- Python:
-  Versione sperimentale, elegante ed educativa -> low performance
+- Camera:
+  - Movable
+  - Antialiasing
 
-- Rust:
-  Versione finale, efficiente, poco leggibile -> high performance
+- Post processing:
+  - None
+ 
+- Algoritmi:
+  - Monte carlo's sample generazione
+  - Riflettanza del vetro usando la legge di Brew
 
-In futuro vorrei aggiungere una versione ibrida delle due
+- Modalità di renderizzazione:
+  - Standard completa
+
+Da aggiungere:
+
+- Geometrie:
+  - Parallelepipedi
+  - Triangoli
+  - Prismi triangolari
+
+- Hardware:
+  - GPU
+
+- Materiali:
+  - Buzz metal
+  - Specular
+  - Subsurface
+  - TEXTURES
+  - HDRI
+
+- Camera:
+  - Depth of field
+  - Motion Blur
+
+- Post processing:
+  - Tone mapping
+  - Denoising
+  - Bloom
+  - Lens distorsion
+ 
+- Algoritmi:
+  - Blue noise
+  - BVH
+  - Direct light sample
+  - Adaptive sampling
+
+- Modalità di renderizzazione:
+  - Ambient Occlusion
+  - Depth Map
+  - Normal Map
+  - Sample map
+  - Real Time Style -> blender's default
+
+
+![rust_parallelo_tracer_high](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/edd3c870-221a-4201-822f-497dda251281)
