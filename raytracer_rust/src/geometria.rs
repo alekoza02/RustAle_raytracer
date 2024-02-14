@@ -51,7 +51,9 @@ pub mod oggetti {
                 let delta_min = (- b - discriminante.sqrt()) / (2.0*a);
                 let delta_max = (- b + discriminante.sqrt()) / (2.0*a);
 
-                if delta_min > 0.0 {delta_min} else if delta_max > 0.0 {delta_max} else {-1.0}
+                if delta_min > 0.001 {delta_min} else if delta_max > 0.001 {delta_max} else {-1.0}
+
+                // delta_min
 
             } else {
                 -1.0
