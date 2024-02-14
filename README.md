@@ -42,6 +42,7 @@ Da aggiungere:
   - Buzz metal
   - Specular
   - Subsurface
+  - Volumes
   - TEXTURES
   - HDRI
 
