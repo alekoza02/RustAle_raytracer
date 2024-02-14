@@ -7,18 +7,19 @@ pub mod file{
     pub fn write_ppm(filename: &str, pixels: &[u8], image_w : i32, image_h : i32, max_value : i32) -> io::Result<()> {
         let mut file = File::create(filename)?;
 
-        // Write the PPM header
+        // PPM header
         writeln!(file, "P6")?;
         writeln!(file, "{} {}", image_w, image_h)?;
         writeln!(file, "{}", max_value)?;
 
-        // Write the pixel data
+        // pixel data info
         file.write_all(pixels)?;
 
         Ok(())
     }
 
-    #[derive(Clone, Copy)] // Derive Clone and Copy traits
+    // Derivazione dei tratti Clone e Copy
+    #[derive(Clone, Copy)]
     pub struct Vettore {
         pub x : f64,
         pub y : f64,

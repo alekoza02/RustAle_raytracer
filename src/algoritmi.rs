@@ -6,6 +6,7 @@ pub mod collisioni {
 
     pub fn test_collisione(raggio : &Camera, oggetti : &[Sfera]) -> HitInfo {
         
+        // inizializzazione record hit e distanza arbitraria come distanza di non collisione
         let mut risultato = HitInfo::new();
         let mut migliore_dx = 100000.0;
 
@@ -16,10 +17,15 @@ pub mod collisioni {
             // per ogni tipo di oggetto esegue il suo test di collisione
             risultato_iter = oggetto.collisione_oggetto(raggio);
             
+            // test se la distanza a cui abbiamo colpito un oggetto è positiva
+            // tutti i test di collisione restituiscono -1.0 se non è avvenuta l'interazione
             if risultato_iter >= 0.0 {
+
+                // test se l'oggetto colpito è il più vicino tra quelli analizzati fino ad ora
                 if risultato_iter < migliore_dx { 
                     migliore_dx = risultato_iter;
                     
+                    // popolamento record con l'oggetto colpito
                     risultato.colpito = true;
                     risultato.distanza = risultato_iter;
                     risultato.indice_sfera = index;
@@ -56,6 +62,9 @@ pub mod collisioni {
         }
 
         pub fn check_front_face(mut self, raggio : &Camera) -> HitInfo {
+
+            // controllo della faccia colpita basata sul prodotto scalare tra direzione e normale (puntante verso l'esterno)
+            // norma rifrazione sarà la normale usata nei calcoli della rifrazione interna in cui il raggio parte dall'interno dell'oggetto
             if raggio.dir_pix.dot(&self.norma_colpito) > 0.0 {
                 self.front_face = false;
                 self.norma_rifrazione = - self.norma_colpito;

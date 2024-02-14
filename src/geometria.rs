@@ -13,7 +13,6 @@ pub mod oggetti {
     // gestione della scena totale
     pub struct Scena {
         pub oggetti : Vec<Sfera>,
-        // luci : [Lucu]
     }
 
     // implementazione funzioni legate alla sfera
@@ -40,20 +39,22 @@ pub mod oggetti {
 
         pub fn collisione_oggetto(&self, raggio : &Camera) -> f64 {
             
+            // BLOCCO COLLISIONE RAGGIO SFERA
             let oc = raggio.pos_iter - self.origine;
             let a : f64 = 1.0;
             let b : f64 = oc.dot(&raggio.dir_pix) * 2.0;
             let c : f64 = oc.dot(&oc) - self.raggio.powi(2);
             
             let discriminante = b.powi(2) - 4.0 * a * c;
+            // BLOCCO COLLISIONE RAGGIO SFERA
 
+            // test delle soluzioni dell'equazione, sarà la soluzione positiva minore
             if discriminante >= 0.0 {
                 let delta_min = (- b - discriminante.sqrt()) / (2.0*a);
                 let delta_max = (- b + discriminante.sqrt()) / (2.0*a);
 
+                // il threshold è impostato su 0.001 per evitare che il raggio rifratto interpreti la sua origine come punto di collisione
                 if delta_min > 0.001 {delta_min} else if delta_max > 0.001 {delta_max} else {-1.0}
-
-                // delta_min
 
             } else {
                 -1.0
