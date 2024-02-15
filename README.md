@@ -12,6 +12,7 @@ Supporta:
   - Diffuse
   - Metal
   - Glass
+  - Roughness
   - Light source
 
 - Camera:
@@ -40,7 +41,6 @@ Da aggiungere:
   - GPU
 
 - Materiali:
-  - Buzz metal
   - Specular
   - Subsurface
   - Volumes
