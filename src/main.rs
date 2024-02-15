@@ -2,6 +2,7 @@ use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 use std::f64::consts::PI;
 use rand::prelude::*;
+// use rand_distr::{Distribution, StandardNormal};
 use std::time::Instant;
 
 mod camera;
@@ -15,9 +16,9 @@ use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
 // setting impostazioni
-const W: usize = 360;
-const H: usize = 360;
-const SAMPLES: i32 = 300;
+const W: usize = 720;
+const H: usize = 720;
+const SAMPLES: i32 = 4096;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -25,6 +26,11 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
     
     // inizializzazione utilities -> numeri random, camera, scena da renderizzare
     let mut rng = rand::thread_rng();
+    
+    // distribuzione normale
+    // let std_nrm = StandardNormal;
+    // let _numero_random_normale : f64 = std_nrm.sample(&mut rng);
+
     let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
     let scena = Scena::cornell_box();
     
@@ -72,24 +78,11 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         // alias per il materiale analizzato
                         let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
                         
-                        // BLOCCO MATERIALE DIFFUSE
-                        if materiale_iterazione.diffuse {
-
-                            // direzione random uniforme (possibile modifica con distribuzione normale) + weight cosine
-                            camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
-                            camera.dir_pix = camera.dir_pix.versore();
-
-                            // test del verso della direzione (se punta verso l'oggetto viene invertito)
-                            if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
-                                camera.dir_pix = -camera.dir_pix;
-                            }
-                        
                         // BLOCCO MATERIALE METALLO
-                        } else if materiale_iterazione.metallo {
+                        if materiale_iterazione.metallo {
                         
                             // calcolo della direzione riflessa (in futuro verrà spostato in una implementazione di Vettore)
                             camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
-                            camera.dir_pix = camera.dir_pix.versore();
                         
                         // BLOCCO MATERIALE VETRO
                         } else if materiale_iterazione.vetro {
@@ -121,7 +114,6 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                                 
                                 // non può rifrarre -> riflessione basata sulla normale interna
                                 camera.dir_pix = camera.dir_pix - info.norma_rifrazione * camera.dir_pix.dot(&info.norma_rifrazione) * 2.0;
-                                camera.dir_pix = camera.dir_pix.versore();
                             
                             } else {
                             
@@ -129,10 +121,13 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                                 let r_out_perp = (camera.dir_pix + info.norma_rifrazione * coseno) * ratio_rifrazione;
                                 let r_out_para = -info.norma_rifrazione * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
                                 camera.dir_pix = r_out_perp + r_out_para;
-                                camera.dir_pix = camera.dir_pix.versore();
                             }
                         }
                         
+                        // calcolo roughness materiale
+                        camera.dir_pix = camera.dir_pix + Vettore::new(rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness));
+                        camera.dir_pix = camera.dir_pix.versore();
+
                         // aggionramento colore e luce in base al contributo di questa iterazione
                         luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
                         ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
