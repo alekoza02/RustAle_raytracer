@@ -21,7 +21,7 @@ Supporta:
   - FOV aggiustabile
 
 - Post processing:
-  - None
+  - Tone mapping (sqrt)
  
 - Algoritmi:
   - Monte carlo's sample generazione
@@ -51,7 +51,6 @@ Da aggiungere:
   - Motion Blur
 
 - Post processing:
-  - Tone mapping
   - Denoising
   - Bloom
   - Lens distorsion
