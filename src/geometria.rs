@@ -75,21 +75,38 @@ pub mod oggetti {
         //     Scena{oggetti : argomento}
         // }
         
-        pub fn cornell_box() -> Scena {
-            let argomento = vec![
-                Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, true, false, 1.0, 0.2)),
-                Sfera::new(Vettore::new(2.5,-3.25,4.),      1.75,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, true, 1.5, 0.1))
-            ];
+        // pub fn cornell_box() -> Scena {
+        //     let argomento = vec![
+        //         Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.1)),
+        //         Sfera::new(Vettore::new(2.5,-3.25,4.),      1.75,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+        //         Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, 1.5, 0.0, 0.0))
+        //     ];
 
-            Scena{oggetti : argomento}
-        }
+        //     Scena{oggetti : argomento}
+        // }
+
+        pub fn cornell_box_gloss() -> Scena {
+                let argomento = vec![
+                    Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., false, 1.0, 0.0, 0.0)),
+                    Sfera::new(Vettore::new(-3.75,-3.8,0.0),        1.2,     Materiale::new(Vettore::new(0.1,1.,0.0), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 1.0)),
+                    Sfera::new(Vettore::new(-1.25,-3.8,0.0),        1.2,     Materiale::new(Vettore::new(0.1,1.,0.0), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.5)),
+                    Sfera::new(Vettore::new(1.25,-3.8,0.0),        1.2,     Materiale::new(Vettore::new(0.1,1.,0.0), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.1)),
+                    Sfera::new(Vettore::new(3.75,-3.8,0.0),        1.2,     Materiale::new(Vettore::new(0.1,1.,0.0), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.0))
+                ];
+    
+                Scena{oggetti : argomento}
+            }
 
     }
 
@@ -98,24 +115,22 @@ pub mod oggetti {
         pub colore : Vettore,
         pub colore_emi : Vettore,
         pub forza_emi : f64,
-        pub lambertian : bool,
-        pub metallo : bool,
         pub vetro : bool,
         pub ir : f64,
-        pub roughness : f64
+        pub roughness : f64,
+        pub glossy : f64
     }
 
     impl Materiale {
-        pub fn new(colore : Vettore, colore_emi : Vettore, forza_emi : f64, lambertian : bool, metallo : bool, vetro : bool, ir : f64, roughness : f64) -> Materiale {
+        pub fn new(colore : Vettore, colore_emi : Vettore, forza_emi : f64, vetro : bool, ir : f64, roughness : f64, glossy : f64) -> Materiale {
             Materiale {
                 colore,
                 colore_emi,
                 forza_emi,
-                lambertian,
-                metallo,
                 vetro,
                 ir,
-                roughness
+                roughness,
+                glossy
             }
         }
     }

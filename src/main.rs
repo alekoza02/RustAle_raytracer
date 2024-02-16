@@ -16,9 +16,9 @@ use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
 // setting impostazioni
-const W: usize = 1800;
-const H: usize = 1800;
-const SAMPLES: i32 = 12000;
+const W: usize = 720;
+const H: usize = 720;
+const SAMPLES: i32 = 4096;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -32,7 +32,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
     // let _numero_random_normale : f64 = std_nrm.sample(&mut rng);
 
     let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
-    let scena = Scena::cornell_box();
+    let scena = Scena::cornell_box_gloss();
     
     // metodo per tener traccia del progresso e aggiornare l'output
     let mut previous_progress = 0;
@@ -81,35 +81,33 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         // alias per il materiale analizzato
                         let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
                         
-                        // BLOCCO MATERIALE DIFFUSE
-                        if materiale_iterazione.lambertian {
-
-                            // direzione random uniforme (possibile modifica con distribuzione normale) + weight cosine
-                            camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
-                            camera.dir_pix = camera.dir_pix.versore();
+                        // BLOCCO MATERIALE DIFFUSE / SPECULAR / GLOSS
+                        if materiale_iterazione.vetro == false {
+                        
+                            // calcolo della direzione riflessa
+                            let specular_ray = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
+                            
+                            // calcolo della direzione random diffusa
+                            let mut diffuse_ray = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
+                            diffuse_ray = diffuse_ray.versore();
 
                             // test del verso della direzione (se punta verso l'oggetto viene invertito)
-                            if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
-                                camera.dir_pix = -camera.dir_pix;
+                            if diffuse_ray.dot(&info.norma_colpito) < 0.0 {
+                                diffuse_ray = -diffuse_ray;
                             }
 
-                        // ------------------------------------------------------------
-                        // In futuro: 
-                        // Blocco diffuse / specular / glossy
-                        // Blocco vetro
+                            // determino se l'iterazione considererà l'effetto glossiness o no -> true = 1, false = 0
+                            let is_specular = materiale_iterazione.glossy >= rng.gen_range(0.0..1.0);
+                            
+                            // combinazione diffusa / speculare / glossy
+                            camera.dir_pix = specular_ray.lerp(diffuse_ray, materiale_iterazione.roughness * is_specular as i32 as f64);
+                            
+                            // aggionramento colore e luce in base al contributo di questa iterazione
+                            luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
+                            ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
+                            ray_color = ray_color * Vettore::new(1.0, 1.0, 1.0).lerp(materiale_iterazione.colore, is_specular as i32 as f64);
+                            
 
-                        // Blocco diffuse userà interpolazione lineare basata su roughness per andare da DIFFUSE a SPECULAR
-                        // Poi, in base a glossy deciderà con una probabilità se effettivamente l'interpolazione avviene o si basa solo sulla DIFFUSE
-                        // (Se diffuse = 0 -> valore specular * 0 (False del glossy) porterà ad avere solo diffuse)
-                        // Per il colore, o colore del raggio classico oppure bianco, basato su se quell'iterazione è glossy o no
-                        // ------------------------------------------------------------
-
-                        // BLOCCO MATERIALE METALLO
-                        } else if materiale_iterazione.metallo {
-                        
-                            // calcolo della direzione riflessa (in futuro verrà spostato in una implementazione di Vettore)
-                            camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
-                        
                         // BLOCCO MATERIALE VETRO
                         } else if materiale_iterazione.vetro {
                             
@@ -148,18 +146,13 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                                 let r_out_para = -info.norma_rifrazione * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
                                 camera.dir_pix = r_out_perp + r_out_para;
                             }
-                        }
-                        
-                        // calcolo roughness materiale
-                        if materiale_iterazione.lambertian == false {
-                            camera.dir_pix = camera.dir_pix + Vettore::new(rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness));
-                            camera.dir_pix = camera.dir_pix.versore();
-                        }
 
-                        // aggionramento colore e luce in base al contributo di questa iterazione
-                        luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
-                        ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
-                        ray_color = ray_color * materiale_iterazione.colore;
+                            // aggionramento colore e luce in base al contributo di questa iterazione
+                            luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
+                            ray_incoming_light = ray_incoming_light + luce_emessa * ray_color;
+                            ray_color = ray_color * materiale_iterazione.colore;
+                            
+                        }
                     
                     } else {
                         break;

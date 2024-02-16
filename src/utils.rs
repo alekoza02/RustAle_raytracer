@@ -70,6 +70,21 @@ pub mod file{
             ]
         }
 
+        pub fn lerp(&self, other : Vettore, percento : f64) -> Vettore {
+            
+            let mut risultato = Vettore::new(0.0, 0.0, 0.0);
+
+            let delta_x = percento * (self.x - other.x);
+            let delta_y = percento * (self.y - other.y);
+            let delta_z = percento * (self.z - other.z); 
+            
+            risultato.x = other.x + delta_x;
+            risultato.y = other.y + delta_y;
+            risultato.z = other.z + delta_z;
+
+            risultato
+        }
+
     }
 
     impl Add for Vettore {
