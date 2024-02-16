@@ -16,9 +16,9 @@ use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
 // setting impostazioni
-const W: usize = 720;
-const H: usize = 720;
-const SAMPLES: i32 = 4096;
+const W: usize = 1800;
+const H: usize = 1800;
+const SAMPLES: i32 = 128;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -43,6 +43,9 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
         let progress : i32 = (100*(x-start_x)/(end_x-start_x)) as i32;
 
         if progress > previous_progress && progress % 5 == 0 && indice == 0{
+            if indice == 0 {
+                println!("Progresso : {}%", {progress})
+            }
             previous_progress = progress;
             save_output_to_file(&output.lock().unwrap());
         }
@@ -78,8 +81,20 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         // alias per il materiale analizzato
                         let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
                         
+                        // BLOCCO MATERIALE DIFFUSE
+                        if materiale_iterazione.lambertian {
+
+                            // direzione random uniforme (possibile modifica con distribuzione normale) + weight cosine
+                            camera.dir_pix = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
+                            camera.dir_pix = camera.dir_pix.versore();
+
+                            // test del verso della direzione (se punta verso l'oggetto viene invertito)
+                            if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
+                                camera.dir_pix = -camera.dir_pix;
+                            }
+
                         // BLOCCO MATERIALE METALLO
-                        if materiale_iterazione.metallo {
+                        } else if materiale_iterazione.metallo {
                         
                             // calcolo della direzione riflessa (in futuro verrà spostato in una implementazione di Vettore)
                             camera.dir_pix = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
@@ -125,8 +140,10 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         }
                         
                         // calcolo roughness materiale
-                        camera.dir_pix = camera.dir_pix + Vettore::new(rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness));
-                        camera.dir_pix = camera.dir_pix.versore();
+                        if materiale_iterazione.lambertian == false {
+                            camera.dir_pix = camera.dir_pix + Vettore::new(rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness),rng.gen_range(-materiale_iterazione.roughness..materiale_iterazione.roughness));
+                            camera.dir_pix = camera.dir_pix.versore();
+                        }
 
                         // aggionramento colore e luce in base al contributo di questa iterazione
                         luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;

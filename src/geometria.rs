@@ -77,15 +77,15 @@ pub mod oggetti {
         
         pub fn cornell_box() -> Scena {
             let argomento = vec![
-                Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, 1.0, 0.2)),
-                Sfera::new(Vettore::new(2.5,-3.25,4.),      1.75,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, 1.0, 1.0)),
-                Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, true, 1.5, 0.1))
+                Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, true, false, 1.0, 0.2)),
+                Sfera::new(Vettore::new(2.5,-3.25,4.),      1.75,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, false, false, 1.0, 1.0)),
+                Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, false, true, 1.5, 0.1))
             ];
 
             Scena{oggetti : argomento}
@@ -98,6 +98,7 @@ pub mod oggetti {
         pub colore : Vettore,
         pub colore_emi : Vettore,
         pub forza_emi : f64,
+        pub lambertian : bool,
         pub metallo : bool,
         pub vetro : bool,
         pub ir : f64,
@@ -105,11 +106,12 @@ pub mod oggetti {
     }
 
     impl Materiale {
-        pub fn new(colore : Vettore, colore_emi : Vettore, forza_emi : f64, metallo : bool, vetro : bool, ir : f64, roughness : f64) -> Materiale {
+        pub fn new(colore : Vettore, colore_emi : Vettore, forza_emi : f64, lambertian : bool, metallo : bool, vetro : bool, ir : f64, roughness : f64) -> Materiale {
             Materiale {
                 colore,
                 colore_emi,
                 forza_emi,
+                lambertian,
                 metallo,
                 vetro,
                 ir,
