@@ -18,7 +18,7 @@ use utils::file::{write_ppm, Vettore};
 // setting impostazioni
 const W: usize = 1800;
 const H: usize = 1800;
-const SAMPLES: i32 = 128;
+const SAMPLES: i32 = 12000;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -92,6 +92,17 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                             if camera.dir_pix.dot(&info.norma_colpito) < 0.0 {
                                 camera.dir_pix = -camera.dir_pix;
                             }
+
+                        // ------------------------------------------------------------
+                        // In futuro: 
+                        // Blocco diffuse / specular / glossy
+                        // Blocco vetro
+
+                        // Blocco diffuse userà interpolazione lineare basata su roughness per andare da DIFFUSE a SPECULAR
+                        // Poi, in base a glossy deciderà con una probabilità se effettivamente l'interpolazione avviene o si basa solo sulla DIFFUSE
+                        // (Se diffuse = 0 -> valore specular * 0 (False del glossy) porterà ad avere solo diffuse)
+                        // Per il colore, o colore del raggio classico oppure bianco, basato su se quell'iterazione è glossy o no
+                        // ------------------------------------------------------------
 
                         // BLOCCO MATERIALE METALLO
                         } else if materiale_iterazione.metallo {
