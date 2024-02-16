@@ -16,9 +16,9 @@ use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
 // setting impostazioni
-const W: usize = 720;
-const H: usize = 720;
-const SAMPLES: i32 = 4096;
+const W: usize = 360;
+const H: usize = 360;
+const SAMPLES: i32 = 64;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
 
@@ -165,15 +165,18 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                 }
 
                 // sommatoria contributi samples
-                rgb = rgb + ray_incoming_light * 255.0;
+                rgb = rgb + ray_incoming_light;
             }
             
             // media samples
             let rgb_mediato = rgb / SAMPLES as f64;
-            
-            // clip dei valori (aggiunta del tone-mapping)
-            let trapianto = rgb_mediato.clip();
 
+            // tone mapping
+            let mut trapianto = rgb_mediato.tone_mapping_base() * 255.0;
+            
+            // clip dei valori
+            trapianto = trapianto.clip();
+            
             // trasformazione in valori u8 (0-255) adatti per il formato .ppm
             let trapianto_u8 = trapianto.to_u8();
 

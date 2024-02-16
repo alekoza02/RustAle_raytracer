@@ -85,6 +85,13 @@ pub mod file{
             risultato
         }
 
+        pub fn tone_mapping_base(mut self) -> Self {
+            self.x = self.x.sqrt();
+            self.y = self.y.sqrt();
+            self.z = self.z.sqrt();
+            self
+        }
+
     }
 
     impl Add for Vettore {
