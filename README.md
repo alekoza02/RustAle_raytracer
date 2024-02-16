@@ -10,9 +10,9 @@ Supporta:
  
 - Materiali:
   - Diffuse
-  - Metal
+  - Specular
+  - Glossiness
   - Glass
-  - Roughness
   - Light source
 
 - Camera:
@@ -41,7 +41,6 @@ Da aggiungere:
   - GPU
 
 - Materiali:
-  - Specular
   - Subsurface
   - Volumes
   - TEXTURES
