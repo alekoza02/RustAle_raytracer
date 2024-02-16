@@ -19,6 +19,7 @@ Supporta:
   - Movable
   - Antialiasing
   - FOV aggiustabile
+  - Depth of field
 
 - Post processing:
   - Tone mapping (sqrt)
@@ -49,7 +50,6 @@ Da aggiungere:
   - HDRI
 
 - Camera:
-  - Depth of field
   - Motion Blur
 
 - Post processing:
