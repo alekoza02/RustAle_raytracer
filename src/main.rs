@@ -18,21 +18,18 @@ use utils::file::{write_ppm, Vettore};
 // setting impostazioni
 const W: usize = 360;
 const H: usize = 360;
-const SAMPLES: i32 = 64;
+const SAMPLES: i32 = 512;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
+const DEPTH_OF_FIELD : bool = true;
 
 fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indice: i32, output: Arc<Mutex<Vec<u8>>>) {
     
     // inizializzazione utilities -> numeri random, camera, scena da renderizzare
     let mut rng = rand::thread_rng();
-    
-    // distribuzione normale
-    // let std_nrm = StandardNormal;
-    // let _numero_random_normale : f64 = std_nrm.sample(&mut rng);
 
     let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
-    let scena = Scena::cornell_box_gloss();
+    let scena = Scena::cornell_box();
     
     // metodo per tener traccia del progresso e aggiornare l'output
     let mut previous_progress = 0;
@@ -57,9 +54,19 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
             
             for _sample in 0..SAMPLES {
                 
-                // genero raggio con direzione (antialiasing : ON) diretta verso quel punto dello schermo con un certo POV 
-                camera.dir_pix = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
-                camera.pos_iter = camera.pos;
+                // genero raggio con direzione (depth of field : ON) diretta verso quel punto dello schermo con un certo POV e origine offset
+                if DEPTH_OF_FIELD == true {
+
+                    // generazione direzione e origine con depth of field (necessaria distanza planare di focus)
+                    camera = camera.depth_of_field_setup(&(x as f64), &(y as f64), &(W as f64), &(H as f64), 26.0);
+
+                } else {
+                    
+                    // genero raggio con direzione (antialiasing : ON) diretta verso quel punto dello schermo con un certo POV 
+                    camera.dir_pix = camera.genera_direzione(&(x as f64), &(y as f64), &(W as f64), &(H as f64));
+                    camera.pos_iter = camera.pos;
+                
+                }
                 
                 // inizializzo le informazioni sui raggi e colori
                 let mut ray_incoming_light = Vettore::new(0., 0., 0.);

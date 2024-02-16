@@ -83,7 +83,7 @@ pub mod oggetti {
                 Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
                 Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
                 Sfera::new(Vettore::new(0.,12.,0.),         8.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.,1.,1.), 3., false, 1.0, 0.0, 0.0)),
-                Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.1)),
+                Sfera::new(Vettore::new(1.,-2.,-2.),        3.,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 1.0)),
                 Sfera::new(Vettore::new(2.5,-3.25,4.),      1.75,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
                 Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, 1.5, 0.1, 0.0))
             ];
