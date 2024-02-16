@@ -86,8 +86,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         
                             // calcolo della direzione riflessa
                             let specular_ray = camera.dir_pix - info.norma_colpito * camera.dir_pix.dot(&info.norma_colpito) * 2.0;
-                            
-                            // calcolo della direzione random diffusa
+
                             let mut diffuse_ray = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
                             diffuse_ray = diffuse_ray.versore();
 
@@ -146,6 +145,12 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                                 let r_out_para = -info.norma_rifrazione * (1.0 - r_out_perp.modulo().powi(2)).abs().sqrt();
                                 camera.dir_pix = r_out_perp + r_out_para;
                             }
+
+                            // combinazione diffusa / vetro
+                            let mut diffuse_ray = Vettore::new(rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0), rng.gen_range(-1.0..1.0));
+                            diffuse_ray = diffuse_ray.versore();
+                            camera.dir_pix = diffuse_ray.lerp(camera.dir_pix, materiale_iterazione.roughness);
+                            camera.dir_pix = camera.dir_pix.versore();
 
                             // aggionramento colore e luce in base al contributo di questa iterazione
                             luce_emessa = materiale_iterazione.colore_emi * materiale_iterazione.forza_emi;
