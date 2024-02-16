@@ -71,3 +71,5 @@ Da aggiungere:
 
 
 ![rust_parallelo_tracer_high](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/edd3c870-221a-4201-822f-497dda251281)
+![test_roughness](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/34215bd9-5ec5-4a40-9836-8f1613fecb4a)
+
