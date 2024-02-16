@@ -30,6 +30,8 @@ Supporta:
 - Modalità di renderizzazione:
   - Standard completa
 
+----------------------------------------------------------------------------------------
+
 Da aggiungere:
 
 - Geometrie:
