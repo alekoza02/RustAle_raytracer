@@ -1,5 +1,6 @@
 pub mod file{
 
+    use std::fmt;
     use std::fs::File;
     use std::io::{self, Write};
     use std::ops::{Add, Div, Mul, Sub, Neg};
@@ -44,6 +45,11 @@ pub mod file{
 
         pub fn dot(&self, v2 : &Vettore) -> f64 {
             self.x * v2.x + self.y * v2.y + self.z * v2.z
+        }
+
+        pub fn cross(&self, v2 : &Vettore) -> Vettore {
+            // Vettore::new(self.y * v2.z - self.z * v2.y, self.z * v2.x - self.x * v2.z, self.x * v2.y - self.y * v2.x)
+            Vettore::new(v2.y * self.z - v2.z * self.y, v2.z * self.x - v2.x * self.z, v2.x * self.y - v2.y * self.x)
         }
 
         pub fn clip(&self) -> Vettore {
@@ -175,6 +181,13 @@ pub mod file{
                 y: self.y / value,
                 z: self.z / value,
             }
+        }
+    }
+
+    // Implement the Display trait for the struct
+    impl fmt::Display for Vettore {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "Vec coord : {} {} {}", self.x, self.y, self.z)
         }
     }
 

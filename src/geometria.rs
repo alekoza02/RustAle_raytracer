@@ -10,9 +10,19 @@ pub mod oggetti {
         pub materiale : Materiale,
     }
 
+    // specifiche sul triangolo
+    pub struct Triangolo {
+        pub v0 : Vettore,
+        pub v1 : Vettore,
+        pub v2 : Vettore,
+        pub normale : Vettore,
+        pub materiale : Materiale,
+    }
+
     // gestione della scena totale
     pub struct Scena {
-        pub oggetti : Vec<Sfera>,
+        pub oggetti_sfere : Vec<Sfera>,
+        pub oggetti_tri : Vec<Triangolo>,
     }
 
     // implementazione funzioni legate alla sfera
@@ -62,6 +72,60 @@ pub mod oggetti {
         }
     }
 
+    // implementazione funzioni legate alla sfera
+    impl Triangolo {
+        fn new(v0 : Vettore, v1 : Vettore, v2 : Vettore, materiale : Materiale) -> Triangolo {
+            let mut risultato = Triangolo {
+                v0,
+                v1,
+                v2,
+                normale : Vettore::new(0.0, 0.0, 0.0),
+                materiale
+            };
+
+            // precalcolo della normale
+            risultato.normale = risultato.normale();
+            risultato
+        }
+
+        pub fn normale(&self) -> Vettore {
+            let ab = self.v1 - self.v0;
+            let ac = self.v2 - self.v0;
+            ab.cross(&ac)
+        }
+
+        pub fn punto_colpito(&self, distanza : f64, raggio : &Camera) -> Vettore {
+            let risultato_1 = raggio.dir_pix * distanza;
+            let risultato_2 = risultato_1 + raggio.pos_iter;
+            risultato_2
+        }
+
+        pub fn collisione_oggetto(&self, raggio : &Camera) -> f64 {
+            
+            // BLOCCO COLLISIONE RAGGIO TRIANGOLO
+            let ab = self.v1 - self.v0;
+            let ac = self.v2 - self.v0;
+            let ao = raggio.pos_iter - self.v0;
+            let dao = ao.cross(&raggio.dir_pix);
+
+            let determinante = - raggio.dir_pix.dot(&self.normale);
+            let inv_determin = 1.0 / determinante;
+
+            let dst = ao.dot(&self.normale) * inv_determin;
+            let u = ac.dot(&dao) * inv_determin;
+            let v = - ab.dot(&dao) * inv_determin;
+            let w = 1.0 - u - v;
+            // BLOCCO COLLISIONE RAGGIO TRIANGOLO
+
+            // test delle soluzioni dell'equazione
+            if determinante > 0.0 && dst > 0.001 && u >= 0.0 && v >= 0.0 && w >= 0.0 {
+                dst
+            } else {
+                -1.0
+            }
+        }
+    }
+
     // implementazione scena default
     impl Scena {
         // pub fn default() -> Scena {
@@ -72,7 +136,7 @@ pub mod oggetti {
         //         Sfera::new(Vettore::new(-8.,-8.,-20.), 10.,     Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(0.,1.,0.), 4., true, false, false, 1.0))
         //     ];
 
-        //     Scena{oggetti : argomento}
+        //     Scena{oggetti_sfere : argomento, oggetti_tri : vec![]}
         // }
         
         pub fn cornell_box() -> Scena {
@@ -88,7 +152,26 @@ pub mod oggetti {
                 Sfera::new(Vettore::new(-3., -3.75,2.),     1.25,   Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., true, 1.5, 0.1, 0.0))
             ];
 
-            Scena{oggetti : argomento}
+            Scena{oggetti_sfere : argomento, oggetti_tri : vec![]}
+        }
+
+        pub fn cornell_box_triangolo() -> Scena {
+            let argomento_sfere = vec![
+                Sfera::new(Vettore::new(0.,-1005.,0.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(0.,1005.,0.),       1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(1005.,0.,0.),       1000.,  Materiale::new(Vettore::new(0.,0.7,1.), Vettore::new(0.,0.,1.), 0., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(-1005.,0.,0.),      1000.,  Materiale::new(Vettore::new(1.,0.5,0.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(0.,0.,-1005.),      1000.,  Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(0.,4.,-2.),        0.5,     Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(1.,1.,1.), 10., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(3.5,-3.25,6.),      0.5,   Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(1.,1.,1.), 10., false, 1.0, 0.0, 0.0)),
+                Sfera::new(Vettore::new(-4., -3.75,2.),     0.5,   Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(1.,1.,1.), 10., false, 1.0, 0.0, 0.0))
+            ];
+
+            let argomento_tri = vec![
+                Triangolo::new(Vettore::new(0.,4.,-2.), Vettore::new(3.5,-3.25,6.), Vettore::new(-4., -3.75,2.), Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(1.,1.,1.), 10., false, 1.0, 0.0, 0.0))
+            ];
+
+            Scena{oggetti_sfere : argomento_sfere, oggetti_tri : argomento_tri}
         }
 
         pub fn cornell_box_gloss() -> Scena {
@@ -105,12 +188,14 @@ pub mod oggetti {
                     Sfera::new(Vettore::new(3.75,-3.8,0.0),        1.2,     Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.,0.,0.), 0., false, 1.0, 1.0, 0.0))
                 ];
     
-                Scena{oggetti : argomento}
+                Scena{oggetti_sfere : argomento, oggetti_tri : vec![]}
             }
 
     }
 
     // materiali
+    // Derivazione dei tratti Clone e Copy
+    #[derive(Clone, Copy)]
     pub struct Materiale {
         pub colore : Vettore,
         pub colore_emi : Vettore,

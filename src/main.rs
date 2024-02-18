@@ -15,13 +15,15 @@ use camera::camera::Camera;
 use geometria::oggetti::Scena;
 use utils::file::{write_ppm, Vettore};
 
+use crate::geometria::oggetti::Materiale;
+
 // setting impostazioni
 const W: usize = 360;
 const H: usize = 360;
-const SAMPLES: i32 = 512;
+const SAMPLES: i32 = 128;
 const BOUNCES: i32 = 20;
 const ZONE_COUNT: usize = 12;
-const DEPTH_OF_FIELD : bool = true;
+const DEPTH_OF_FIELD : bool = false;
 
 fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indice: i32, output: Arc<Mutex<Vec<u8>>>) {
     
@@ -29,7 +31,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
     let mut rng = rand::thread_rng();
 
     let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
-    let scena = Scena::cornell_box();
+    let scena = Scena::cornell_box_triangolo();
     
     // metodo per tener traccia del progresso e aggiornare l'output
     let mut previous_progress = 0;
@@ -77,7 +79,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                     
                     // eseguo il test di collisione con tutti gli oggetti della scena
                     // in futuro qui sarà presente prima il test BVH 
-                    let info = test_collisione(&camera, &scena.oggetti);
+                    let info = test_collisione(&camera, &scena.oggetti_sfere, &scena.oggetti_tri);
                     
                     // se colpito calcola il colore dell'iterazione, altrimenti interrompe il ciclo
                     if info.colpito {
@@ -86,7 +88,32 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         camera.pos_iter = info.punto_colpito;
 
                         // alias per il materiale analizzato
-                        let materiale_iterazione = &scena.oggetti[info.indice_sfera].materiale;
+                        let materiale_iterazione : Materiale ;
+
+                        if info.tipo_oggetto == "sfera" {
+                            materiale_iterazione = scena.oggetti_sfere[info.indice_oggetti_prox].materiale;
+                        } else if info.tipo_oggetto == "triangolo" {
+                            // materiale_iterazione = scena.oggetti_tri[info.indice_oggetti_prox].materiale;
+
+                            // FUN RELEASE TRI
+                            let ab = scena.oggetti_tri[info.indice_oggetti_prox].v1 - scena.oggetti_tri[info.indice_oggetti_prox].v0;
+                            let ac = scena.oggetti_tri[info.indice_oggetti_prox].v2 - scena.oggetti_tri[info.indice_oggetti_prox].v0;
+                            let ao = camera.pos_iter - scena.oggetti_tri[info.indice_oggetti_prox].v0;
+                            let dao = ao.cross(&camera.dir_pix);
+
+                            let determinante = - camera.dir_pix.dot(&scena.oggetti_tri[info.indice_oggetti_prox].normale);
+                            let inv_determin = 1.0 / determinante;
+
+                            let u = ac.dot(&dao) * inv_determin;
+                            let v = - ab.dot(&dao) * inv_determin;
+                            let w = 1.0 - u - v;
+                            materiale_iterazione = Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(u,v,w), 2., false, 1.0, 0.0, 0.0)
+
+                        } else {
+                            println!("Attenzione, tipologia di oggetto non riconosciuto : {}", info.tipo_oggetto);
+                            materiale_iterazione = Materiale::new(Vettore::new(1.0, 0.0, 1.0), Vettore::new(1.0, 0.0, 1.0), 10.0, false, 0.0, 0.0, 0.0)
+                        }
+
                         
                         // BLOCCO MATERIALE DIFFUSE / SPECULAR / GLOSS
                         if materiale_iterazione.vetro == false {
