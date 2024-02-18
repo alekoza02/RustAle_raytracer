@@ -1,9 +1,12 @@
 pub mod file{
 
     use std::fmt;
-    use std::fs::File;
     use std::io::{self, Write};
     use std::ops::{Add, Div, Mul, Sub, Neg};
+    use std::fs::File;
+    use std::io::{BufRead, BufReader};
+
+    use crate::geometria::oggetti::{Materiale, Triangolo};
 
     pub fn write_ppm(filename: &str, pixels: &[u8], image_w : i32, image_h : i32, max_value : i32) -> io::Result<()> {
         let mut file = File::create(filename)?;
@@ -17,6 +20,93 @@ pub mod file{
         file.write_all(pixels)?;
 
         Ok(())
+    }
+    
+    pub fn read_lines_from_file(filename: &str) -> Result<Vec<String>, std::io::Error> {
+
+        let file = File::open(filename)?;
+        let reader = BufReader::new(file);
+        let mut lines = Vec::new();
+    
+        for line in reader.lines() {
+            lines.push(line?);
+        }
+    
+        Ok(lines)
+    }
+
+    pub fn controllo_estrazione() -> Vec<Triangolo> {
+        let mut triangoli : Vec<Triangolo> = vec![];
+        match read_lines_from_file("modelli/m_ban.obj") {
+            Ok(lines) => {
+        
+                let mut vertici : Vec<Vettore> = vec![];
+                let mut links : Vec<Vettore> = vec![];
+
+                for line in lines {
+        
+                    if let Some(primo_valore) = line.chars().next() {
+                        
+                        if primo_valore == 'v' {
+        
+                            // Split the string by whitespace and collect the parts into a vector
+                            let parts: Vec<&str> = line.split_whitespace().collect();
+
+                            // Parse the second, third, and fourth parts into f64 values
+                            if let [_, x_str, y_str, z_str] = parts.as_slice() {
+                                
+                                if let (Ok(x), Ok(y), Ok(z)) = (x_str.parse::<f64>(), y_str.parse::<f64>(), z_str.parse::<f64>()) {
+                                
+                                    let vertice: Vettore = Vettore::new(x, y, z);
+                                    vertici.push(vertice)
+                                
+                                } else {
+                                
+                                    println!("Error: Failed to parse coordinates");
+                                
+                                }
+                            
+                            } else {
+                            
+                                println!("Error: Unexpected number of parts");
+                            
+                            }
+                            
+
+        
+                        } else if primo_valore == 'f' {
+        
+                            // Split the line by whitespace and skip the first element
+                            let link: Vec<_> = line
+                                .split_whitespace()
+                                .skip(1)
+                                // For each part, split by '//', take the first part, and parse it into an integer
+                                .map(|x| x.split("//").next().unwrap().parse::<i32>().unwrap())
+                                .collect();
+                            
+                            links.push(Vettore::new((link[0] as f64 - 1.0), (link[1] as f64 - 1.0), (link[2] as f64 - 1.0),))
+        
+                        }
+                    }
+                }
+
+                let lunghezza_modello = links.len();
+
+                for i in 0..lunghezza_modello {
+                    triangoli.push(Triangolo::new(
+                        Vettore::new(vertici[links[i].x as usize].x, vertici[links[i].x as usize].y, vertici[links[i].x as usize].z),
+                        Vettore::new(vertici[links[i].y as usize].x, vertici[links[i].y as usize].y, vertici[links[i].y as usize].z),
+                        Vettore::new(vertici[links[i].z as usize].x, vertici[links[i].z as usize].y, vertici[links[i].z as usize].z),
+                        Materiale::new(Vettore::new(0.0, 0.0, 0.0), Vettore::new(i as f64 / lunghezza_modello as f64,0.0, 1.0 - i as f64 / lunghezza_modello as f64), 1.0, false, 0.0, 0.0, 0.0)
+                    ))
+                }
+
+            }
+            Err(err) => eprintln!("Error reading file: {}", err),
+        }
+
+        triangoli
+
     }
 
     // Derivazione dei tratti Clone e Copy

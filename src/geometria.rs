@@ -74,7 +74,7 @@ pub mod oggetti {
 
     // implementazione funzioni legate alla sfera
     impl Triangolo {
-        fn new(v0 : Vettore, v1 : Vettore, v2 : Vettore, materiale : Materiale) -> Triangolo {
+        pub fn new(v0 : Vettore, v1 : Vettore, v2 : Vettore, materiale : Materiale) -> Triangolo {
             let mut risultato = Triangolo {
                 v0,
                 v1,
@@ -172,6 +172,10 @@ pub mod oggetti {
             ];
 
             Scena{oggetti_sfere : argomento_sfere, oggetti_tri : argomento_tri}
+        }
+
+        pub fn cornell_box_banshee() -> Scena {
+            Scena{oggetti_sfere : vec![], oggetti_tri : vec![]}
         }
 
         pub fn cornell_box_gloss() -> Scena {

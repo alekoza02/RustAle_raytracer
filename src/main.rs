@@ -2,7 +2,6 @@ use rayon::prelude::*;
 use std::sync::{Arc, Mutex};
 use std::f64::consts::PI;
 use rand::prelude::*;
-// use rand_distr::{Distribution, StandardNormal};
 use std::time::Instant;
 
 mod camera;
@@ -13,15 +12,15 @@ mod algoritmi;
 use algoritmi::collisioni::test_collisione;
 use camera::camera::Camera;
 use geometria::oggetti::Scena;
-use utils::file::{write_ppm, Vettore};
+use utils::file::{write_ppm, Vettore, controllo_estrazione};
 
 use crate::geometria::oggetti::Materiale;
 
 // setting impostazioni
-const W: usize = 360;
-const H: usize = 360;
-const SAMPLES: i32 = 128;
-const BOUNCES: i32 = 20;
+const W: usize = 1800;
+const H: usize = 1800;
+const SAMPLES: i32 = 32;
+const BOUNCES: i32 = 1;
 const ZONE_COUNT: usize = 12;
 const DEPTH_OF_FIELD : bool = false;
 
@@ -29,10 +28,20 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
     
     // inizializzazione utilities -> numeri random, camera, scena da renderizzare
     let mut rng = rand::thread_rng();
-
-    let mut camera = Camera::new(Vettore::new(0., 0., 30.), Vettore::new(0., 0., -1.), Vettore::new(0., 1., 0.), Vettore::new(1., 0., 0.), PI / 8.0);
-    let scena = Scena::cornell_box_triangolo();
     
+    let mut camera = Camera::new(
+        Vettore::new(0., 0., -7.),
+        Vettore::new(0.0, 0.0, 1.0),
+        Vettore::new(0.0, 1.0, 0.0),
+        Vettore::new(1.0, 0.0, 0.0),
+        PI / 8.0);
+
+    let mut scena = Scena::cornell_box_banshee();
+    
+    // caricamento modello
+    scena.oggetti_tri = controllo_estrazione();
+    println!("Thread {} : Scena caricata", indice);
+
     // metodo per tener traccia del progresso e aggiornare l'output
     let mut previous_progress = 0;
 
@@ -41,7 +50,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
         // aggiornamento output
         let progress : i32 = (100*(x-start_x)/(end_x-start_x)) as i32;
 
-        if progress > previous_progress && progress % 5 == 0 && indice == 0{
+        if progress > previous_progress && progress % 5 == 0 && indice == 0 {
             if indice == 0 {
                 println!("Progresso : {}%", {progress})
             }
@@ -93,22 +102,7 @@ fn render_zone(start_x: usize, end_x: usize, start_y: usize, end_y: usize, indic
                         if info.tipo_oggetto == "sfera" {
                             materiale_iterazione = scena.oggetti_sfere[info.indice_oggetti_prox].materiale;
                         } else if info.tipo_oggetto == "triangolo" {
-                            // materiale_iterazione = scena.oggetti_tri[info.indice_oggetti_prox].materiale;
-
-                            // FUN RELEASE TRI
-                            let ab = scena.oggetti_tri[info.indice_oggetti_prox].v1 - scena.oggetti_tri[info.indice_oggetti_prox].v0;
-                            let ac = scena.oggetti_tri[info.indice_oggetti_prox].v2 - scena.oggetti_tri[info.indice_oggetti_prox].v0;
-                            let ao = camera.pos_iter - scena.oggetti_tri[info.indice_oggetti_prox].v0;
-                            let dao = ao.cross(&camera.dir_pix);
-
-                            let determinante = - camera.dir_pix.dot(&scena.oggetti_tri[info.indice_oggetti_prox].normale);
-                            let inv_determin = 1.0 / determinante;
-
-                            let u = ac.dot(&dao) * inv_determin;
-                            let v = - ab.dot(&dao) * inv_determin;
-                            let w = 1.0 - u - v;
-                            materiale_iterazione = Materiale::new(Vettore::new(0.,0.,0.), Vettore::new(u,v,w), 2., false, 1.0, 0.0, 0.0)
-
+                            materiale_iterazione = scena.oggetti_tri[info.indice_oggetti_prox].materiale;
                         } else {
                             println!("Attenzione, tipologia di oggetto non riconosciuto : {}", info.tipo_oggetto);
                             materiale_iterazione = Materiale::new(Vettore::new(1.0, 0.0, 1.0), Vettore::new(1.0, 0.0, 1.0), 10.0, false, 0.0, 0.0, 0.0)
@@ -227,7 +221,7 @@ fn main() {
     
     // start timer
     let start_time = Instant::now();
-    
+
     // La tipologia di output sarà un array condiviso di u8
     let output = Arc::new(Mutex::new(vec![0; W * H * 3]));
     
