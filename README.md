@@ -32,6 +32,9 @@ Supporta:
 - Modalità di renderizzazione:
   - Standard completa
 
+- Features:
+  - Caricamento .obj
+
 ----------------------------------------------------------------------------------------
 
 Da aggiungere:
@@ -70,13 +73,11 @@ Da aggiungere:
   - Sample map
   - Real Time Style -> blender's default
 
-- Features:
-  - Caricamento .obj
-
 ![rust_parallelo_tracer_high](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/edd3c870-221a-4201-822f-497dda251281)
 ![test_roughness](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/34215bd9-5ec5-4a40-9836-8f1613fecb4a)
 ![test_glossiness](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/347262bb-c696-455a-ab83-8c2f703c37b6)
 ![test_depth_field](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/0f4b97b5-954d-4074-9875-07517d198c02)
 ![test_triangoli](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/0029a8ee-f5b2-4a05-a534-a7d8c88ac462)
+![test_banshee](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/87ef9a7e-2da7-4504-b319-7aa751f1c051)
 
 
