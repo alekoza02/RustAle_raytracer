@@ -11,6 +11,7 @@ pub mod oggetti {
     }
 
     // specifiche sul triangolo
+    #[derive(Clone, Copy)]
     pub struct Triangolo {
         pub v0 : Vettore,
         pub v1 : Vettore,
@@ -176,6 +177,25 @@ pub mod oggetti {
 
         pub fn cornell_box_banshee() -> Scena {
             Scena{oggetti_sfere : vec![], oggetti_tri : vec![]}
+        }
+
+        pub fn cornell_box_parallelepipedo() -> Scena {
+            let argomento_tri = vec![
+                Triangolo::new(Vettore::new(-20.,20.,-5.), Vettore::new(20.,20.0,-5.), Vettore::new(-20., -20.,-5.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-20.,-20.,-5.), Vettore::new(20.,20.0,-5.), Vettore::new(20., -20.,-5.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-5.,20.,20.), Vettore::new(-5.,20.0,-20.), Vettore::new(-5., -20.,-20.), Materiale::new(Vettore::new(1.,0.,0.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-5.,-20.,-20.), Vettore::new(-5.,-20.0,20.), Vettore::new(-5., 20.,20.), Materiale::new(Vettore::new(1.,0.,0.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(5.,20.,20.), Vettore::new(5.,-20.0,20.), Vettore::new(5., 20.,-20.), Materiale::new(Vettore::new(0.,1.,0.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(5.,-20.,-20.), Vettore::new(5.,20.0,-20.), Vettore::new(5., -20.,20.), Materiale::new(Vettore::new(0.,1.,0.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(20., 5., 20.), Vettore::new(20., 5., -20.), Vettore::new(-20., 5., -20.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-20., 5., 20.), Vettore::new(20., 5., 20.), Vettore::new(-20., 5., -20.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(2.5, 4.999, 2.5), Vettore::new(2.5, 4.999, -2.5), Vettore::new(-2.5, 4.999, -2.5), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.0, 1.0, 1.0), 4., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-2.5, 4.999, 2.5), Vettore::new(2.5, 4.999, 2.5), Vettore::new(-2.5, 4.999, -2.5), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(1.0, 1.0, 1.0), 4., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-20., -5., 20.), Vettore::new(-20., -5., -20.), Vettore::new(20., -5., -20.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+                Triangolo::new(Vettore::new(-20., -5., 20.), Vettore::new(20., -5., -20.), Vettore::new(20., -5., 20.), Materiale::new(Vettore::new(1.,1.,1.), Vettore::new(0.0, 0.0, 0.0), 0., false, 1.0, 0.0, 0.0)),
+            ];
+
+            Scena{oggetti_sfere : vec![], oggetti_tri : argomento_tri}
         }
 
         pub fn cornell_box_gloss() -> Scena {

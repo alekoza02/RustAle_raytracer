@@ -37,7 +37,7 @@ pub mod file{
 
     pub fn controllo_estrazione() -> Vec<Triangolo> {
         let mut triangoli : Vec<Triangolo> = vec![];
-        match read_lines_from_file("modelli/m_ban.obj") {
+        match read_lines_from_file("modelli/m_scimmia.obj") {
             Ok(lines) => {
         
                 let mut vertici : Vec<Vettore> = vec![];
@@ -84,7 +84,7 @@ pub mod file{
                                 .map(|x| x.split("//").next().unwrap().parse::<i32>().unwrap())
                                 .collect();
                             
-                            links.push(Vettore::new((link[0] as f64 - 1.0), (link[1] as f64 - 1.0), (link[2] as f64 - 1.0),))
+                            links.push(Vettore::new(link[0] as f64 - 1.0, link[1] as f64 - 1.0, link[2] as f64 - 1.0),)
         
                         }
                     }
@@ -95,9 +95,9 @@ pub mod file{
                 for i in 0..lunghezza_modello {
                     triangoli.push(Triangolo::new(
                         Vettore::new(vertici[links[i].x as usize].x, vertici[links[i].x as usize].y, vertici[links[i].x as usize].z),
-                        Vettore::new(vertici[links[i].y as usize].x, vertici[links[i].y as usize].y, vertici[links[i].y as usize].z),
                         Vettore::new(vertici[links[i].z as usize].x, vertici[links[i].z as usize].y, vertici[links[i].z as usize].z),
-                        Materiale::new(Vettore::new(0.0, 0.0, 0.0), Vettore::new(i as f64 / lunghezza_modello as f64,0.0, 1.0 - i as f64 / lunghezza_modello as f64), 1.0, false, 0.0, 0.0, 0.0)
+                        Vettore::new(vertici[links[i].y as usize].x, vertici[links[i].y as usize].y, vertici[links[i].y as usize].z),
+                        Materiale::new(Vettore::new(1.0, 1.0, 1.0), Vettore::new(0.0, 0.0, 0.0), 0.0, false, 1.0, 0.0, 0.0)
                     ))
                 }
 
