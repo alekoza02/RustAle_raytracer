@@ -79,5 +79,6 @@ Da aggiungere:
 ![test_depth_field](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/0f4b97b5-954d-4074-9875-07517d198c02)
 ![test_triangoli](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/0029a8ee-f5b2-4a05-a534-a7d8c88ac462)
 ![test_banshee](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/87ef9a7e-2da7-4504-b319-7aa751f1c051)
+![release_suzanne](https://github.com/alekoza02/RustAle_raytracer/assets/125405005/9f69c700-fe2f-4858-b2f9-06f70afecca0)
 
 
